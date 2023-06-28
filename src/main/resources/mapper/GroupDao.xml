@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.dao.GroupDao">
+
+    <resultMap id="GroupResultMap" type="com.chat.entity.Group">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="groupName" column="group_name" jdbcType="VARCHAR"/>
+        <result property="groupLevel" column="group_level" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap type="com.chat.entity.User" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
+        <result property="userStateId" column="user_state_id" jdbcType="INTEGER"/>
+        <result property="isEnabled" column="is_enabled" jdbcType="OTHER"/>
+        <result property="isLocked" column="is_locked" jdbcType="OTHER"/>
+    </resultMap>
+    <resultMap type="com.chat.entity.GroupMsgContent" id="GroupMsgContentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
+        <result property="fromName" column="from_name" jdbcType="VARCHAR"/>
+        <result property="fromProfile" column="from_profile" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="messageTypeId" column="message_type_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!--查询全部-->
+    <select id="getAllGroup" resultMap="GroupResultMap">
+        SELECT * FROM chatroom.groups
+    </select>
+
+    <!--查询用户所在群聊-->
+    <select id="getUserGroup" resultMap="GroupResultMap">
+        SELECT chatroom.groups.*
+        FROM chatroom.groups
+                 JOIN chatroom.group_user ON chatroom.groups.id = chatroom.group_user.group_id
+        WHERE chatroom.group_user.user_id = #{userid};
+    </select>
+
+    <!--查询群聊消息-->
+    <select id="getGroupMsg" resultMap="GroupMsgContentMap">
+        SELECT chatroom.group_msg_content.*
+        FROM chatroom.group_msg_content
+                 JOIN chatroom.group_msg ON chatroom.group_msg_content.id = chatroom.group_msg.msg_id
+        WHERE chatroom.group_msg.group_id = #{groupid};
+    </select>
+
+    <!--新增group-->
+    <insert id="insertGroup" keyProperty="id" useGeneratedKeys="true">
+        insert into chatroom.groups(group_name,group_level)
+        values (#{groupName}, #{groupLevel})
+    </insert>
+
+    <!--拉人进群-->
+    <insert id="invite" >
+        insert into chatroom.group_user(group_id,user_id)
+        values (#{groupid}, #{userid})
+    </insert>
+
+    <!--退群-->
+    <delete id="quit" >
+        delete from chatroom.group_user where group_id = #{groupid} and user_id = #{userid};
+    </delete>
+
+    <!--添加群消息-->
+    <insert id="addMsg" >
+        insert into chatroom.group_msg(group_id,msg_id)
+        values (#{groupid}, #{msgid})
+    </insert>
+
+    <!-- 删除群组 -->
+    <delete id="deleteGroup">
+        delete from chatroom.groups where id = #{groupid}
+    </delete>
+
+    <!-- 删除群组成员关联 -->
+    <delete id="deleteGroupUser">
+        delete from chatroom.group_user where group_id = #{groupid}
+    </delete>
+
+    <!-- 删除群组消息 -->
+    <delete id="deleteGroupMsg">
+        delete from chatroom.group_msg where group_id = #{groupid}
+    </delete>
+
+    <!-- 删除群组消息 -->
+    <delete id="deleteMsg">
+        delete from chatroom.group_msg where group_id = #{groupid} and msg_id = #{msgid}
+    </delete>
+
+</mapper>

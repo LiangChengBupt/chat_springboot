@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.dao.FriendDao">
+
+    <resultMap id="FriendResultMap" type="com.chat.entity.Friend">
+        <result property="userid1" column="user_id1" jdbcType="INTEGER"/>
+        <result property="userid2" column="user_id2" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap type="com.chat.entity.User" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
+        <result property="userStateId" column="user_state_id" jdbcType="INTEGER"/>
+        <result property="isEnabled" column="is_enabled" jdbcType="OTHER"/>
+        <result property="isLocked" column="is_locked" jdbcType="OTHER"/>
+    </resultMap>
+    <resultMap id="FriendRequestResultMap" type="com.chat.entity.FriendRequest">
+        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
+        <result property="toId" column="to_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!--查询好友-->
+    <select id="getFriendById" resultMap="UserMap">
+        SELECT *
+        FROM chatroom.user
+                 JOIN chatroom.friends ON chatroom.user.id = chatroom.friends.user_id2
+        WHERE chatroom.friends.user_id1 = #{userid};
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insertFriend1">
+        INSERT INTO chatroom.friends (user_id1, user_id2) VALUES (#{userid1}, #{userid2});
+    </insert>
+
+    <insert id="insertFriend2">
+        INSERT INTO chatroom.friends (user_id1, user_id2) VALUES (#{userid2}, #{userid1});
+    </insert>
+
+    <select id="getSendTo" resultMap="UserMap">
+        SELECT *
+        FROM chatroom.user
+                 JOIN chatroom.friend_request ON chatroom.user.id = chatroom.friend_request.to_id
+        WHERE chatroom.friend_request.from_id = #{userid};
+    </select>
+
+    <select id="getReceiveFrom" resultMap="UserMap">
+        SELECT *
+        FROM chatroom.user
+                 JOIN chatroom.friend_request ON chatroom.user.id = chatroom.friend_request.from_id
+        WHERE chatroom.friend_request.to_id = #{userid};
+    </select>
+
+    <insert id="insertRequest">
+        INSERT INTO chatroom.friend_request (from_id, to_id) VALUES (#{fromId}, #{toId});
+    </insert>
+
+    <delete id="deleteById">
+        delete from chatroom.friend_request where from_id = #{fromId} and to_id = #{toId};
+    </delete>
+
+</mapper>
