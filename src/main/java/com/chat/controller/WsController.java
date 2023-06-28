@@ -4,6 +4,7 @@ import com.chat.entity.GroupMsgContent;
 import com.chat.entity.Message;
 import com.chat.entity.User;
 import com.chat.service.GroupMsgContentService;
+import com.chat.service.GroupService;
 import com.chat.service.MessageService;
 import com.chat.utils.TuLingUtil;
 import com.github.binarywang.java.emoji.EmojiConverter;
@@ -29,6 +30,9 @@ public class WsController {
   @Autowired
   MessageService messageService;
 
+  @Autowired
+  GroupService groupService;
+
   /**
    * 单聊的消息的接受与转发
    * @param authentication
@@ -40,16 +44,16 @@ public class WsController {
     //处理emoji内容,转换成unicode编码
     message.setContent(emojiConverter.toHtml(message.getContent()));
     //保证来源正确性，从Security中获取用户信息
-    message.setFromId(user.getId());
-    message.setFromNickname(user.getNickname());
-    message.setFromUserProfile(user.getUserProfile());
-    message.setFrom(user.getUsername());
+    message.setFromId(message.getFromId());
+    message.setFromNickname(message.getFromNickname());
+    message.setFromUserProfile(message.getFromUserProfile());
+    message.setFrom(message.getFrom());
     message.setCreateTime(new Date());
-    System.out.println(message.getCreateTime());
+    System.out.println(message.getTo());
     //保存该条群聊消息记录到数据库中
     messageService.insert(message);
     //转发该条数据
-    simpMessagingTemplate.convertAndSendToUser(message.getTo(),"/queue/chat",message);
+    simpMessagingTemplate.convertAndSendToUser(message.getTo(),"/queue/chat/"+message.getToId(),message);
   }
 
   @Autowired
@@ -64,7 +68,7 @@ public class WsController {
    * @param groupMsgContent
    */
   @MessageMapping("/ws/groupChat")
-  public void handleGroupMessage(Authentication authentication, GroupMsgContent groupMsgContent){
+  public void handleGroupMessage(Authentication authentication, GroupMsgContent groupMsgContent, Integer groupId){
     User currentUser= (User) authentication.getPrincipal();
     //处理emoji内容,转换成unicode编码
     groupMsgContent.setContent(emojiConverter.toHtml(groupMsgContent.getContent()));
@@ -75,6 +79,7 @@ public class WsController {
     groupMsgContent.setCreateTime(new Date());
     //保存该条群聊消息记录到数据库中
     groupMsgContentService.insert(groupMsgContent,currentUser.getId());
+    groupService.addMsg(groupId,groupMsgContent.getId());
     //转发该条数据
     simpMessagingTemplate.convertAndSend("/topic/greetings",groupMsgContent);
   }
