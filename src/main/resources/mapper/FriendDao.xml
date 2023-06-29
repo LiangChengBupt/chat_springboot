@@ -61,4 +61,8 @@
         delete from chatroom.friend_request where from_id = #{fromId} and to_id = #{toId};
     </delete>
 
+    <select id="getFriendQueByID" resultMap="FriendRequestResultMap">
+        SELECT * FROM chatroom.friend_request where from_id = #{fromId} and to_id = #{toId};
+    </select>
+
 </mapper>

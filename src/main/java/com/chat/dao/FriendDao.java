@@ -1,5 +1,6 @@
 package com.chat.dao;
 
+import com.chat.entity.FriendRequest;
 import com.chat.entity.User;
 
 import java.util.List;
@@ -55,4 +56,6 @@ public interface FriendDao {
      * @return 影响行数
      */
     int deleteById(Integer fromId,Integer toId);
+
+    FriendRequest getFriendQueByID(Integer fromId, Integer toId);
 }

@@ -12,6 +12,7 @@
         <result property="isEnabled" column="is_enabled" jdbcType="OTHER"/>
         <result property="isLocked" column="is_locked" jdbcType="OTHER"/>
     </resultMap>
+
     <!--根据用户名查询用户 -->
     <select id="loadUserByUsername" resultMap="UserMap">
         select * from chatroom.user where username=#{username}

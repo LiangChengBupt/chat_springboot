@@ -77,7 +77,16 @@ public class FriendServiceImpl implements FriendService {
     public int addRequest(String fromName, String toName) {
         Integer fromId = userDao.loadUserByUsername(fromName).getId();
         Integer toId = userDao.loadUserByUsername(toName).getId();
-        return this.friendDao.insertRequest(fromId,toId);
+        if(fromId!=0&&toId!=0){
+            if(friendDao.getFriendQueByID(fromId,toId)!=null){
+                return 0;
+            }else {
+                return this.friendDao.insertRequest(fromId, toId);
+            }
+        }else {
+            return 0;
+        }
+
     }
 
     /**

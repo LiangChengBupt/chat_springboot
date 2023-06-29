@@ -213,7 +213,7 @@ public class UserController {
      * @param toId
      * @return 影响行数
      */
-    @GetMapping("/addFriendRequest")
+    @GetMapping("/addFriendRequestById")
     public int addFriendRequest(Integer fromId,Integer toId){
         int i = this.friendService.addRequest(fromId,toId);
         if(i>0){
@@ -222,9 +222,8 @@ public class UserController {
         return i;
     }
 
-    @GetMapping("/addFriendRequestByName")
+    @GetMapping("/addFriendRequest")
     public int addFriendRequest_name(String fromName,String toName){
-
         int i = this.friendService.addRequest(fromName,toName);
         if(i>0){
             simpMessagingTemplate.convertAndSendToUser(toName,"/queue/chat","refresh");
