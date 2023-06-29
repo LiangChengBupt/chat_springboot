@@ -30,7 +30,7 @@ public class TuLingUtil {
   public static String replyMessage(String message) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     RobotReq robotReq = new RobotReq();
-    robotReq.setModel("gpt-3.5-turbo");
+    robotReq.setModel("gpt-3.5-turbo-0301");
     robotReq.setRole("user");
     robotReq.setContent(message);
     robotReq.setSafe_mode(false);

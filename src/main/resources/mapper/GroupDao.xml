@@ -5,6 +5,7 @@
     <resultMap id="GroupResultMap" type="com.chat.entity.Group">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="groupName" column="group_name" jdbcType="VARCHAR"/>
+        <result property="groupProfile" column="group_profile" jdbcType="VARCHAR"/>
         <result property="groupLevel" column="group_level" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap type="com.chat.entity.User" id="UserMap">

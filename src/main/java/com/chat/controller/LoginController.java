@@ -1,10 +1,6 @@
 package com.chat.controller;
 
-import com.chat.config.VerificationCode;
-import com.chat.entity.RespBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.chat.utils.VerificationCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,12 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Random;
 
 /**
  * @author gzx
- *
  */
 @RestController
 public class LoginController {

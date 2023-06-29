@@ -1,4 +1,4 @@
-package com.chat.config;
+package com.chat.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

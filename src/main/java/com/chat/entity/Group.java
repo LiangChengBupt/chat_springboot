@@ -3,6 +3,7 @@ package com.chat.entity;
 public class Group {
     private Integer id;
     private String groupName;
+    private String groupProfile;
     private Integer groupLevel;
 
     public Integer getId() {
@@ -19,6 +20,14 @@ public class Group {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getGroupProfile() {
+        return groupProfile;
+    }
+
+    public void setGroupProfile(String groupProfile) {
+        this.groupProfile = groupProfile;
     }
 
     public Integer getGroupLevel() {

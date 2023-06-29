@@ -12,8 +12,7 @@ import com.chat.utils.FastDFSUtil;
 import java.io.IOException;
 
 /**
- * @author Hai
- * @date 2020/6/21 - 16:47
+ * @author lc
  */
 @RestController
 public class FileController {
@@ -21,18 +20,10 @@ public class FileController {
   @Value("${fastdfs.nginx.host}")
   String nginxHost;
 
-//  @Autowired
-//  AliyunOssUtil aliyunOssUtil;
-
   @PostMapping("/file")
-  public String uploadFlie(MultipartFile file) throws IOException, MyException {
-    String fileId= FastDFSUtil.upload(file);
-    return nginxHost+fileId;
+  public String uploadFile(MultipartFile file) throws IOException, MyException {
+    String fileId = FastDFSUtil.upload(file);
+    return nginxHost + fileId;
   }
-
-//  @PostMapping("/ossFileUpload")
-//  public String ossFileUpload(@RequestParam("file")MultipartFile file,@RequestParam("module") String module) throws IOException, MyException {
-//    return aliyunOssUtil.upload(file.getInputStream(),module,file.getOriginalFilename());
-//  }
 
 }

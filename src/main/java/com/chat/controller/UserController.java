@@ -4,6 +4,7 @@ import com.chat.entity.*;
 import com.chat.service.FriendService;
 import com.chat.service.GroupService;
 import com.chat.service.UserService;
+import com.chat.service.impl.FaceRecognitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class UserController {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
 
+    @Resource
+    private FaceRecognitionService faceRecognitionService;
+
     /**
     获得一个用户的所有好友
      */
@@ -45,6 +49,25 @@ public class UserController {
             return RespBean.ok("注册成功！");
         }else{
             return RespBean.error("注册失败！");
+        }
+    }
+
+    @PostMapping("/personImg/upload")
+    public RespBean addUser(String img, String personName, String personId){
+        if(faceRecognitionService.uploadImg(img, personName, personId)){
+            return RespBean.ok("人脸图像上传成功！");
+        }
+        else
+            return RespBean.error("人脸图像上传失败！");
+    }
+
+    @DeleteMapping("/personImg/{personId}")
+    public RespBean deleteUser(@PathVariable String personId){
+        if (faceRecognitionService.deletePerson(personId)){
+            return RespBean.ok("删除人员成功！");
+        }
+        else{
+            return RespBean.error("删除人员失败！");
         }
     }
 
