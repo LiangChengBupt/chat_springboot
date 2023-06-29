@@ -46,6 +46,11 @@ public class GroupServiceImpl implements GroupService {
         return this.groupDao.getGroupMsg(groupid);
     }
 
+    @Override
+    public Group getGroupByName(String groupName) {
+        return this.groupDao.getGroupByName(groupName);
+    }
+
     /**
      * 新建群聊
      *

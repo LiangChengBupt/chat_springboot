@@ -14,6 +14,8 @@ import java.util.List;
 public interface UserService {
 
 
+    User getByName(String name);
+
     /**
      * 获取除了当前登录用户的所有user表的数据
      * @return

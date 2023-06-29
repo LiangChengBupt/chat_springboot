@@ -24,6 +24,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Resource
     private UserDao userDao;
 
+
+    @Override
+    public User getByName(String name) {
+        return userDao.loadUserByUsername(name);
+    }
+
     /**
      * 根据用户名进行登录
      * @param username

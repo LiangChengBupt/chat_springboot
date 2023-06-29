@@ -1,6 +1,7 @@
 package com.chat.service.impl;
 
 import com.chat.dao.FriendDao;
+import com.chat.dao.UserDao;
 import com.chat.entity.User;
 import com.chat.service.FriendService;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import java.util.List;
 public class FriendServiceImpl implements FriendService {
     @Resource
     private FriendDao friendDao;
+
+    @Resource
+    private UserDao userDao;
     /**
      * 通过userID查询其好友
      *
@@ -66,6 +70,13 @@ public class FriendServiceImpl implements FriendService {
      */
     @Override
     public int addRequest(Integer fromId, Integer toId) {
+        return this.friendDao.insertRequest(fromId,toId);
+    }
+
+    @Override
+    public int addRequest(String fromName, String toName) {
+        Integer fromId = userDao.loadUserByUsername(fromName).getId();
+        Integer toId = userDao.loadUserByUsername(toName).getId();
         return this.friendDao.insertRequest(fromId,toId);
     }
 

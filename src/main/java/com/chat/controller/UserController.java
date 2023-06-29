@@ -32,6 +32,12 @@ public class UserController {
     @Resource
     private FaceRecognitionService faceRecognitionService;
 
+
+    @GetMapping("/getUserByName")
+    public User getUserByName(String userName){
+        return userService.getByName(userName);
+    }
+
     /**
     获得一个用户的所有好友
      */
@@ -216,6 +222,16 @@ public class UserController {
         return i;
     }
 
+    @GetMapping("/addFriendRequestByName")
+    public int addFriendRequest_name(String fromName,String toName){
+
+        int i = this.friendService.addRequest(fromName,toName);
+        if(i>0){
+            simpMessagingTemplate.convertAndSendToUser(toName,"/queue/chat","refresh");
+        }
+        return i;
+    }
+
     /**
      * 通过请求
      *
@@ -281,6 +297,11 @@ public class UserController {
     @GetMapping("/getGroupMsg")
     public List<GroupMsgContent> getGroupMsg(@RequestParam Integer groupid) {
         return groupService.getGroupMsg(groupid);
+    }
+
+    @GetMapping("/getGroupByName")
+    public Group getGroupByName(String groupName){
+        return groupService.getGroupByName(groupName);
     }
 
     /**

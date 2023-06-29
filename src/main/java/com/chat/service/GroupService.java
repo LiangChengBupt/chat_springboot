@@ -29,6 +29,8 @@ public interface GroupService {
      */
     List<GroupMsgContent> getGroupMsg(Integer groupid);
 
+    Group getGroupByName (String groupName);
+
     /**
      * 新建群聊
      *

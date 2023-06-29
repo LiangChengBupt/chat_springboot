@@ -47,6 +47,8 @@ public interface FriendService {
      */
     int addRequest(Integer fromId,Integer toId);
 
+    int addRequest(String fromName,String toName);
+
     /**
      * 通过请求
      *
