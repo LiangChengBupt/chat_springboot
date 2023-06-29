@@ -1,21 +1,20 @@
 package com.chat.utils;
 
-
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.chat.entity.RobotReq;
+import com.chat.entity.RobotResp;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.BufferedReader;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
 
 /**
  * 智能回复机器人工具类
- * @author gzx
+ * @author jzq
  * @date 2023/6/23
  */
 public class TuLingUtil {
@@ -23,46 +22,33 @@ public class TuLingUtil {
   private static ObjectMapper MAPPER=new ObjectMapper();
 
   /**
-   * 发送消息，获得图灵机器人回复消息
+   * 发送消息，获得chatgpt回复消息
    * @param message
    * @return
    * @throws IOException
    */
   public static String replyMessage(String message) throws IOException {
-    String APIKEY = "40445cf23e2144828218d7fc95d6f05a";
-    String INFO = URLEncoder.encode(message, "utf-8");
-    String getURL = "http://www.tuling123.com/openapi/api?key=" + APIKEY + "&info=" + INFO;
-    URL getUrl = new URL(getURL);
-    HttpURLConnection connection = (HttpURLConnection) getUrl.openConnection();
-    connection.connect();
-    // 取得输入流，并使用Reader读取
-    BufferedReader reader = new BufferedReader(new InputStreamReader( connection.getInputStream(), "utf-8"));
-    StringBuffer sb = new StringBuffer();
-    String line = "";
-    while ((line = reader.readLine()) != null) {
-      sb.append(line);
-    }
-    reader.close();
-    // 断开连接
-    connection.disconnect();
-
-    return parseMess(sb.toString());
+    ObjectMapper objectMapper = new ObjectMapper();
+    RobotReq robotReq = new RobotReq();
+    robotReq.setModel("gpt-3.5-turbo");
+    robotReq.setRole("user");
+    robotReq.setContent(message);
+    robotReq.setSafe_mode(false);
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpPost httpPost = new HttpPost("https://oa.api2d.net/v1/chat/completions");
+    httpPost.setHeader("Content-type", "application/json");
+    httpPost.setHeader("Authorization", "Bearer fk208811-TrNCBIqTP1Y1ZOxnW9v4uNitPNlDaxhC");
+    httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(robotReq)));
+    HttpResponse response = httpClient.execute(httpPost);
+    HttpEntity entity = response.getEntity();
+    String resp = EntityUtils.toString(entity);
+    System.out.println(resp);
+    RobotResp robotResp = objectMapper.readValue(resp,RobotResp.class);
+    return robotResp.getChoices().get(0).getMessage().getContent();
   }
 
-  /**
-   * 解析返回的JSON字符串，获取回复字符串
-   * @param jsonStr
-   * @return
-   * @throws JsonProcessingException
-   */
-  public static String parseMess(String jsonStr) throws JsonProcessingException {
-    HashMap resultMap = MAPPER.readValue(jsonStr, HashMap.class);
-    String result = ((String) resultMap.get("text"));
-    return result;
-  }
   public static void main(String[] args) throws IOException {
-    String jsonStr = replyMessage("http://39.108.169.57/group1/M00/00/00/J2ypOV7wP0-AEZHOAAILbcn5GEM095.jpg");
-    HashMap resultMap = MAPPER.readValue(jsonStr, HashMap.class);
-    System.out.println(resultMap.get("text"));
+    //test
+    System.out.println(replyMessage("hi"));
   }
 }

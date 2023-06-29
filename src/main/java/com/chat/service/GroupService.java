@@ -65,6 +65,15 @@ public interface GroupService {
     int addMsg(Integer groupid,Integer msgid);
 
     /**
+     * 添加群聊信息群聊（添加对应关系而非信息本身）
+     *
+     * @param groupName
+     * @param msgid
+     * @return int
+     */
+    int addMsg(String groupName,Integer msgid);
+
+    /**
      * 删除群聊信息群聊（删除对应关系而非信息本身）
      *
      * @param groupid

@@ -33,6 +33,11 @@
         SELECT * FROM chatroom.groups
     </select>
 
+    <!--查询全部-->
+    <select id="getGroupByName" resultMap="GroupResultMap">
+        SELECT * FROM chatroom.groups where group_name = #{groupName}
+    </select>
+
     <!--查询用户所在群聊-->
     <select id="getUserGroup" resultMap="GroupResultMap">
         SELECT chatroom.groups.*

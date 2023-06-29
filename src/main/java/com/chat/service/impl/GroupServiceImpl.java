@@ -95,6 +95,23 @@ public class GroupServiceImpl implements GroupService {
     }
 
     /**
+     * 添加群聊信息群聊（添加对应关系而非信息本身）
+     *
+     * @param groupName
+     * @param msgid
+     * @return int
+     */
+    @Override
+    public int addMsg(String groupName, Integer msgid) {
+        Group group = this.groupDao.getGroupByName(groupName);
+        if(group == null){
+            return 0;
+        }else {
+            return this.groupDao.addMsg(group.getId(),msgid);
+        }
+    }
+
+    /**
      * 删除群聊信息群聊（删除对应关系而非信息本身）
      *
      * @param groupid

@@ -1,5 +1,6 @@
 package com.chat.controller;
 
+import com.chat.entity.Group;
 import com.chat.entity.GroupMsgContent;
 import com.chat.entity.Message;
 import com.chat.entity.User;
@@ -41,6 +42,7 @@ public class WsController {
   @MessageMapping("/ws/chat")
   public void handleMessage(Authentication authentication, Message message){
     User user= ((User) authentication.getPrincipal());
+    System.out.println(authentication.getPrincipal().toString());
     //处理emoji内容,转换成unicode编码
     message.setContent(emojiConverter.toHtml(message.getContent()));
     //保证来源正确性，从Security中获取用户信息
@@ -68,7 +70,7 @@ public class WsController {
    * @param groupMsgContent
    */
   @MessageMapping("/ws/groupChat")
-  public void handleGroupMessage(Authentication authentication, GroupMsgContent groupMsgContent, Integer groupId){
+  public void handleGroupMessage(Authentication authentication, GroupMsgContent groupMsgContent, String groupName){
     User currentUser= (User) authentication.getPrincipal();
     //处理emoji内容,转换成unicode编码
     groupMsgContent.setContent(emojiConverter.toHtml(groupMsgContent.getContent()));
@@ -79,7 +81,7 @@ public class WsController {
     groupMsgContent.setCreateTime(new Date());
     //保存该条群聊消息记录到数据库中
     groupMsgContentService.insert(groupMsgContent,currentUser.getId());
-    groupService.addMsg(groupId,groupMsgContent.getId());
+    groupService.addMsg(groupName,groupMsgContent.getId());
     //转发该条数据
     simpMessagingTemplate.convertAndSend("/topic/greetings",groupMsgContent);
   }

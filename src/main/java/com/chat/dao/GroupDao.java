@@ -15,6 +15,13 @@ public interface GroupDao {
     List<Group> getAllGroup();
 
     /**
+     * groupname查找群聊
+     *
+     * @return 实例对象
+     */
+    Group getGroupByName(String groupName);
+
+    /**
      * 查找用户所在的群聊
      *
      * @param userid
