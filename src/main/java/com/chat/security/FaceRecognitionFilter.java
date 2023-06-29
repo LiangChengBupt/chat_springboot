@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -22,6 +23,9 @@ public class FaceRecognitionFilter extends GenericFilter {
 
     @Autowired
     FaceRecognitionAuthenticationProvider faceRecognitionAuthenticationProvider;
+
+    @Autowired
+    SessionRegistry sessionRegistry;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -43,9 +47,10 @@ public class FaceRecognitionFilter extends GenericFilter {
                 FaceRecognitionAuthenticationToken authRequest = new FaceRecognitionAuthenticationToken(faceImageData, null);
 
                 Authentication authResult = faceRecognitionAuthenticationProvider.authenticate(authRequest);
-                System.out.println(authResult.getPrincipal());
+//                System.out.println(authResult.getPrincipal());
                 if (authResult != null) {
                     SecurityContextHolder.getContext().setAuthentication(authResult);
+                    sessionRegistry.registerNewSession(request.getRequestedSessionId(), authResult.getPrincipal());
                     myAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authResult);
                     // 不再调用后续过滤器，直接返回
                 } else {

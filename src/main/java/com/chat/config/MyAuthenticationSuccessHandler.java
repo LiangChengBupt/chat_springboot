@@ -37,25 +37,26 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         User presentUser = (User) authentication.getPrincipal();
         presentUser.setPassword(null);
         String username = presentUser.getUsername();
-
         // 检测会话是否重复，重复的话就把之前的删掉
         String currentSessionId = req.getSession().getId();
         List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
-        for (Object principal: allPrincipals) {
-            if (!(principal instanceof User))
-                continue;
-            User user = (User) principal;
-            if (!user.getUsername().equals(username))
-                continue;
-            // 获取该用户的所有活动会话
-            List<SessionInformation> userSessions = sessionRegistry.getAllSessions(user, false);
-            for (SessionInformation session: userSessions) {
-                if (!session.getSessionId().equals(currentSessionId)) {
-                    session.expireNow();
-//                            sessionRegistry.removeSessionInformation(session.getSessionId());
-//                            allPrincipals.remove(principal);
-                    simpMessagingTemplate.convertAndSendToUser(user.getUsername(), "/queue/errors", "{ \"type\": \"session_expired\" }");
+        if(allPrincipals != null) {
+            for (Object principal : allPrincipals) {
+                if (!(principal instanceof User))
+                    continue;
+                User user = (User) principal;
+                if (!user.getUsername().equals(username))
+                    continue;
+                // 获取该用户的所有活动会话
+                List<SessionInformation> userSessions = sessionRegistry.getAllSessions(user, false);
+                for (SessionInformation session : userSessions) {
+                    if (!session.getSessionId().equals(currentSessionId)) {
+                        session.expireNow();
+//                        sessionRegistry.removeSessionInformation(session.getSessionId());
+//                        allPrincipals.remove(principal);
+                        simpMessagingTemplate.convertAndSendToUser(user.getUsername(), "/queue/errors", "{ \"type\": \"session_expired\" }");
 
+                    }
                 }
             }
         }
