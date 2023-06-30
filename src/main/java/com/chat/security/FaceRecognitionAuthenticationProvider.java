@@ -1,5 +1,6 @@
 package com.chat.security;
 
+import com.chat.entity.User;
 import com.chat.service.impl.FaceRecognitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -8,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Component
 public class FaceRecognitionAuthenticationProvider implements AuthenticationProvider {
@@ -23,7 +27,7 @@ public class FaceRecognitionAuthenticationProvider implements AuthenticationProv
         // 在这里，你可以使用你的FaceRecognitionService来认证用户
         UserDetails user = faceRecognitionService.recognize((String) principal);
         if (user == null) {
-            throw new BadCredentialsException("人脸验证失败！");
+            return new FaceRecognitionAuthenticationToken(null, null);
         }
         FaceRecognitionAuthenticationToken authenticatedToken =
                 new FaceRecognitionAuthenticationToken(user, null);
